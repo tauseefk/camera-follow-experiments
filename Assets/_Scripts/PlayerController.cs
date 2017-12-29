@@ -29,8 +29,9 @@ public class PlayerController : MonoBehaviour {
 
 	private Rigidbody _rb;
 
-	private float inputH;
-	private float inputV;
+	private float _inputH;
+	private float _previousInputH = 0.0f;
+	private float _inputV;
 
 	private Vector3 _LEFT = new Vector3 (-1.0f, 0.0f, 0.0f);
 	private Vector3 _RIGHT = new Vector3 (1.0f, 0.0f, 0.0f);
@@ -50,24 +51,28 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	void Update () {
-		inputH = Input.GetAxis(INPUT_AXIS);
-		inputV = Input.GetAxis (JUMP);
+		_inputH = Input.GetAxis(INPUT_AXIS);
+		_inputV = Input.GetAxis (JUMP);
 
-		if (Mathf.Abs(inputH) <= 0.05f) {
+
+		// XXX:TODO This is weird, simplify
+		bool directionChanged = Mathf.Sign(Vector3.Dot(transform.forward.normalized, _rb.velocity.normalized)) == -1;
+
+		if (Mathf.Approximately(Mathf.Abs(_inputH), Mathf.Epsilon) || directionChanged) {
 			_playerCollider.material.dynamicFriction = 0.6f;
 			_playerCollider.material.staticFriction = 0.6f;
 		} else {
 			_playerCollider.material.dynamicFriction = _initialFriction;
 			_playerCollider.material.staticFriction = _initialFriction;
 		}
-		if (inputH > 0 && _rightRotationCoroutine == null) {
+		if (_inputH > 0 && _rightRotationCoroutine == null) {
 			if (_leftRotationCoroutine != null) {
 				StopCoroutine (_leftRotationCoroutine);
 				_leftRotationCoroutine = null;
 			}
 			_rightRotationCoroutine = StartCoroutine (TurnToRight());
 
-		} else if (inputH < 0 && _leftRotationCoroutine == null) {
+		} else if (_inputH < 0 && _leftRotationCoroutine == null) {
 			if (_rightRotationCoroutine != null) {
 				StopCoroutine (_rightRotationCoroutine);
 				_rightRotationCoroutine = null;
@@ -77,13 +82,13 @@ public class PlayerController : MonoBehaviour {
 	}
 	void FixedUpdate () {
 
-		if (!_inAir && inputV > 0) {
+		if (!_inAir && _inputV > 0) {
 			_rb.AddForce (Vector3.up * _bounceSpeed, ForceMode.Impulse);
 			_inAir = true;
 		}
 			
 		if (Mathf.Abs (_rb.velocity.x) < _maxSpeed) {
-			_rb.AddForce (inputH * _acceleration, 0.0f, 0.0f, ForceMode.VelocityChange);
+			_rb.AddForce (_inputH * _acceleration, 0.0f, 0.0f, ForceMode.VelocityChange);
 		}
 	}
 

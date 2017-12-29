@@ -8,6 +8,7 @@ public class PlayerController : MonoBehaviour {
 	private const string JUMP = "Jump";
 
 	private bool _inAir = true;
+	private bool _isCharacterStopping = false;
 
 	[SerializeField]
 	[Tooltip("Horizontal acceleration of the player.")]
@@ -24,6 +25,12 @@ public class PlayerController : MonoBehaviour {
 	[SerializeField]
 	[Tooltip("Rotation speed of the player")]
 	private float _rotationSpeed = 4f;
+
+	[SerializeField]
+	[Tooltip("Dust trail prefab")]
+	private GameObject _dustTrailPrefab;
+
+	private GameObject _dustTrailInstance;
 
 	private Vector3 _velocity;
 
@@ -61,9 +68,15 @@ public class PlayerController : MonoBehaviour {
 		if (Mathf.Approximately(Mathf.Abs(_inputH), Mathf.Epsilon) || directionChanged) {
 			_playerCollider.material.dynamicFriction = 0.6f;
 			_playerCollider.material.staticFriction = 0.6f;
+			if (!_isCharacterStopping && !_inAir) {
+				_isCharacterStopping = true;
+				// XXX:TODO instantiate particle system here
+				CreateDustTrail();
+			}
 		} else {
 			_playerCollider.material.dynamicFriction = _initialFriction;
 			_playerCollider.material.staticFriction = _initialFriction;
+			_isCharacterStopping = false;
 		}
 		if (_inputH > 0 && _rightRotationCoroutine == null) {
 			if (_leftRotationCoroutine != null) {
@@ -86,14 +99,15 @@ public class PlayerController : MonoBehaviour {
 			_rb.AddForce (Vector3.up * _bounceSpeed, ForceMode.Impulse);
 			_inAir = true;
 		}
-			
+		// XXX:TODO this is causing loss of character control while in air at certain speeds
 		if (Mathf.Abs (_rb.velocity.x) < _maxSpeed) {
 			_rb.AddForce (_inputH * _acceleration, 0.0f, 0.0f, ForceMode.VelocityChange);
 		}
 	}
 
 	void OnCollisionEnter (Collision other) {
-		if (other.gameObject.layer == LayerMask.NameToLayer ("Platform")) {
+		// XXX:TODO the velocity condition is stupid
+		if (other.gameObject.layer == LayerMask.NameToLayer ("Platform") && _rb.velocity.y <= _bounceSpeed/5) {
 			_inAir = false;
 		}
 	}
@@ -117,6 +131,19 @@ public class PlayerController : MonoBehaviour {
 			timeElapsed = Time.time - startTime;
 			transform.rotation = Quaternion.Lerp (Quaternion.LookRotation(transform.forward), Quaternion.LookRotation(_RIGHT), timeElapsed * _rotationSpeed);	
 			yield return null;
+		}
+	}
+
+	void CreateDustTrail() {
+		if (_dustTrailInstance == null) {
+			_dustTrailInstance = Instantiate (_dustTrailPrefab, transform.position, Quaternion.LookRotation (transform.forward));
+			_dustTrailInstance.GetComponent<ParticleSystem> ().Play ();
+			GetComponent<ParticleSystem> ().Play ();
+		} else {
+			_dustTrailInstance.transform.position = transform.position;
+			_dustTrailInstance.transform.rotation = Quaternion.LookRotation (transform.forward);
+			_dustTrailInstance.GetComponent<ParticleSystem> ().Play ();
+			GetComponent<ParticleSystem> ().Play ();
 		}
 	}
 }

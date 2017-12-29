@@ -12,10 +12,6 @@ public class CameraController : MonoBehaviour {
 
 	[SerializeField]
 	private float _translationFraction = 0.125f;
-
-	// Use this for initialization
-	void Start () {
-	}
 	
 	// Update is called once per frame
 	void FixedUpdate () {

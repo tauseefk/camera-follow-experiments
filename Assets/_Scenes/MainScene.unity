@@ -575,7 +575,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4630044013274814, guid: 9f9d4e301063e4c28bd80c5fd24e1fdd, type: 2}
       propertyPath: m_LocalPosition.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4630044013274814, guid: 9f9d4e301063e4c28bd80c5fd24e1fdd, type: 2}
       propertyPath: m_LocalPosition.z
@@ -600,10 +600,6 @@ Prefab:
     - target: {fileID: 4630044013274814, guid: 9f9d4e301063e4c28bd80c5fd24e1fdd, type: 2}
       propertyPath: m_RootOrder
       value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 1657969184717182, guid: 9f9d4e301063e4c28bd80c5fd24e1fdd, type: 2}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 9f9d4e301063e4c28bd80c5fd24e1fdd, type: 2}
@@ -899,7 +895,7 @@ ParticleSystem:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 927429736}
   serializedVersion: 5
-  lengthInSec: 0.2
+  lengthInSec: 0.4
   simulationSpeed: 1
   stopAction: 0
   looping: 0
@@ -952,7 +948,7 @@ ParticleSystem:
   moveWithTransform: 1
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
-  randomSeed: -1513769922
+  randomSeed: -1763910175
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -4493,7 +4489,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 97a2127d37da84f6291bb26604c64ac3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

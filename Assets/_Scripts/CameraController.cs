@@ -13,7 +13,6 @@ public class CameraController : MonoBehaviour {
 	[SerializeField]
 	private float _translationFraction = 0.125f;
 	
-	// Update is called once per frame
 	void FixedUpdate () {
 		Vector3 desiredPosition = _target.position + _offset;
 		Vector3 intermediatePosition = Vector3.Lerp (transform.position, desiredPosition, _translationFraction);

@@ -31,6 +31,7 @@ public class PlayerController : MonoBehaviour {
 	private GameObject _dustTrailPrefab;
 
 	private GameObject _dustTrailInstance;
+	private ParticleSystem _slideParticleSystem;
 
 	private Vector3 _velocity;
 
@@ -52,6 +53,7 @@ public class PlayerController : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		_rb = GetComponent<Rigidbody> ();
+		_slideParticleSystem = GetComponent<ParticleSystem> ();
 		_rb.freezeRotation = true;
 		_playerCollider = GetComponent<Collider>();
 		_initialFriction = _playerCollider.material.dynamicFriction;
@@ -107,7 +109,7 @@ public class PlayerController : MonoBehaviour {
 
 	void OnCollisionEnter (Collision other) {
 		// XXX:TODO the velocity condition is stupid
-		if (other.gameObject.layer == LayerMask.NameToLayer ("Platform") && _rb.velocity.y <= _bounceSpeed/5) {
+		if (other.gameObject.layer == LayerMask.NameToLayer ("Platform") && other.contacts[0].normal == Vector3.up) {
 			_inAir = false;
 		}
 	}
@@ -138,12 +140,12 @@ public class PlayerController : MonoBehaviour {
 		if (_dustTrailInstance == null) {
 			_dustTrailInstance = Instantiate (_dustTrailPrefab, transform.position, Quaternion.LookRotation (transform.forward));
 			_dustTrailInstance.GetComponent<ParticleSystem> ().Play ();
-			GetComponent<ParticleSystem> ().Play ();
+			_slideParticleSystem.Play ();
 		} else {
 			_dustTrailInstance.transform.position = transform.position;
 			_dustTrailInstance.transform.rotation = Quaternion.LookRotation (transform.forward);
 			_dustTrailInstance.GetComponent<ParticleSystem> ().Play ();
-			GetComponent<ParticleSystem> ().Play ();
+			_slideParticleSystem.Play ();
 		}
 	}
 }
